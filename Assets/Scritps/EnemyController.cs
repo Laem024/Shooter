@@ -11,6 +11,12 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed;
     public Animator demonAnim;
 
+    public bool shouldshoot;
+    public float fireRate = .7f;
+    private float shotCounter;
+    public GameObject bullet;
+    public Transform firePoint;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +33,16 @@ public class EnemyController : MonoBehaviour
             theRB.velocity = playerDirection * moveSpeed; 
 
             demonAnim.SetBool("demon_run", true);
+
+            if(shouldshoot)
+            {
+                shotCounter -= Time.deltaTime;
+                if(shotCounter <= 0)
+                {
+                    Instantiate(bullet, firePoint.position, firePoint.rotation);
+                    shotCounter = fireRate;
+                }
+            }
         }else
         {
             theRB.velocity = Vector2.zero;
@@ -41,6 +57,7 @@ public class EnemyController : MonoBehaviour
         {
             Destroy(gameObject);
             Instantiate(explosion, transform.position, transform.rotation);
+            PlayerController.instance.scoore += 1;
         }
     }
 }
